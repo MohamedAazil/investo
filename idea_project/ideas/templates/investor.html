@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Investors{% endblock %}
+
+{% block content %}
+<body>
+    <section>
+        <h2>Investors</h2>
+        <div id="investorCards">
+            <!-- Investor cards for Tinder-like matching will be added here -->
+        </div>
+        <div id="actions">
+            <button id="dislikeBtn">Dislike</button>
+            <button id="likeBtn">Like</button>
+        </div>
+    </section>
+
+    <script>
+        const investors = [
+            { name: 'Investor 1', email: 'aazil11th@gmail.com', interest: ['Tech', 'Startups'] },
+            { name: 'Investor 2', email: 'investor2@example.com', interest: ['Green Energy'] },
+            { name: 'Investor 3', email: 'investor3@example.com', interest: ['Healthcare'] }
+        ];
+
+        let currentInvestorIndex = 0;
+
+        function initInvestors() {
+            const investorCards = document.getElementById('investorCards');
+
+            function showInvestor() {
+                investorCards.innerHTML = '';
+                const investor = investors[currentInvestorIndex];
+                const div = document.createElement('div');
+                div.classList.add('investor-card');
+                div.innerHTML = `
+                    <h3>${investor.name}</h3>
+                    <p>${investor.interest.join(', ')}</p>
+                    <button class="messageBtn" onclick="redirectToMessage('${investor.email}')">Message</button>
+                `;
+                investorCards.appendChild(div);
+            }
+
+            showInvestor();
+
+            document.getElementById('likeBtn').addEventListener('click', () => {
+                alert('You liked ' + investors[currentInvestorIndex].name);
+                currentInvestorIndex = (currentInvestorIndex + 1) % investors.length;
+                showInvestor();
+            });
+
+            document.getElementById('dislikeBtn').addEventListener('click', () => {
+                alert('You disliked ' + investors[currentInvestorIndex].name);
+                currentInvestorIndex = (currentInvestorIndex + 1) % investors.length;
+                showInvestor();
+            });
+        }
+
+        function redirectToMessage(email) {
+            window.location.href = `/chat/${encodeURIComponent(email)}/`;
+        }
+
+        initInvestors();
+    </script>
+</body>
+{% endblock %}

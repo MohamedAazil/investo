@@ -1,0 +1,131 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    color: #4b2e2e;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #8b4513;
+    color: #fff;
+    padding: 1rem;
+    text-align: center;
+}
+
+header nav a {
+    color: #fff;
+    margin: 0 1rem;
+    text-decoration: none;
+}
+
+main {
+    padding: 2rem;
+}
+
+form input, form button {
+    display: block;
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    width: 100%;
+    max-width: 400px;
+}
+
+form textarea {
+    display: block;
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    width: 96%;
+    max-width: 400px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+select {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 1rem;
+}
+
+select option {
+    padding: 0.5rem;
+}
+
+/* Add styles for navigation menu */
+nav {
+    background-color: #8b4513;
+    padding: 1rem;
+    text-align: center;
+}
+
+nav a {
+    color: #fff;
+    margin: 0 1rem;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+#chatbotInterface {
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+}
+
+#chatMessages {
+    border: 1px solid #8b4513;
+    padding: 1rem;
+    margin-top: 1rem;
+    height: 200px;
+    overflow-y: scroll;
+}
+
+#mentorList, #investorCards {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#investorCards > div {
+    background-color: #fff;
+    border: 1px solid #8b4513;
+    margin: 0.5rem;
+    padding: 1rem;
+    width: calc(33% - 1rem);
+    box-sizing: border-box;
+}
+
+#actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+#actions button {
+    background-color: #8b4513;
+    border: none;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    margin: 0 0.5rem;
+    cursor: pointer;
+}
+
+#actions button:hover {
+    background-color: #5f331a;
+}
+
+#mentorList > div {
+    background-color: #fff;
+    border: 1px solid #8b4513;
+    margin: 0.5rem;
+    padding: 1rem;
+    width: calc(33% - 1rem);
+    box-sizing: border-box;
+}

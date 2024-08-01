@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Study Resources{% endblock %}
+
+{% block content %}
+<section>
+    <h2>Study Resources</h2>
+    <p>Access a variety of resources to learn about starting and running a business.</p>
+    <div id="studyResources">
+        {% for video in videos %}
+        <div class="video-card">
+            <video controls>
+                <source src="{{ video.video_source }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <p>{{ video.title }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

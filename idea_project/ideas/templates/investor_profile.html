@@ -1,0 +1,18 @@
+<!-- investor_profile.html -->
+
+{% extends 'base2.html' %}
+
+{% block title %}Create Investor Profile{% endblock %}
+
+{% block content %}
+<body>
+    <section>
+        <h2>Create Investor Profile</h2>
+        <form method="POST" action="{% url 'save_profile' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Save Profile</button>
+        </form>
+    </section>
+</body>
+{% endblock %}

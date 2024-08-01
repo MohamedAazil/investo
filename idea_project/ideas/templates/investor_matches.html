@@ -1,0 +1,65 @@
+{% extends 'base2.html' %}
+
+{% block title %}Entrepreneurs{% endblock %}
+
+{% block content %}
+<body>
+    <section>
+        <h2>Entrepreneurs</h2>
+        <div id="entrepreneurCards">
+            <!-- Entrepreneur cards for Tinder-like matching will be added here -->
+        </div>
+        <div id="actions">
+            <button id="dislikeBtn">Dislike</button>
+            <button id="likeBtn">Like</button>
+        </div>
+    </section>
+
+    <script>
+        const entrepreneurs = [
+            { name: 'Entrepreneur 1', email: 'aazil11@gmail.com', project: 'Tech Startup' },
+            { name: 'Entrepreneur 2', email: 'entrepreneur2@example.com', project: 'Green Energy' },
+            { name: 'Entrepreneur 3', email: 'entrepreneur3@example.com', project: 'Healthcare Innovation' }
+        ];
+
+        let currentEntrepreneurIndex = 0;
+
+        function initEntrepreneurs() {
+            const entrepreneurCards = document.getElementById('entrepreneurCards');
+
+            function showEntrepreneur() {
+                entrepreneurCards.innerHTML = '';
+                const entrepreneur = entrepreneurs[currentEntrepreneurIndex];
+                const div = document.createElement('div');
+                div.classList.add('entrepreneur-card');
+                div.innerHTML = `
+                    <h3>${entrepreneur.name}</h3>
+                    <p>${entrepreneur.project}</p>
+                    <button class="messageBtn" onclick="redirectToMessage('${entrepreneur.email}')">Message</button>
+                `;
+                entrepreneurCards.appendChild(div);
+            }
+
+            showEntrepreneur();
+
+            document.getElementById('likeBtn').addEventListener('click', () => {
+                alert('You liked ' + entrepreneurs[currentEntrepreneurIndex].name);
+                currentEntrepreneurIndex = (currentEntrepreneurIndex + 1) % entrepreneurs.length;
+                showEntrepreneur();
+            });
+
+            document.getElementById('dislikeBtn').addEventListener('click', () => {
+                alert('You disliked ' + entrepreneurs[currentEntrepreneurIndex].name);
+                currentEntrepreneurIndex = (currentEntrepreneurIndex + 1) % entrepreneurs.length;
+                showEntrepreneur();
+            });
+        }
+
+        function redirectToMessage(email) {
+            window.location.href = `/chat/${encodeURIComponent(email)}/`;
+        }
+
+        initEntrepreneurs();
+    </script>
+</body>
+{% endblock %}

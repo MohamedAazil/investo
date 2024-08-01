@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Chatbot{% endblock %}
+
+{% block content %}
+<section>
+    <h2>AI Chatbot</h2>
+    <div id="chatbotInterface">
+        <input type="text" id="chatInput" placeholder="Ask a question...">
+        <button onclick="sendMessage()">Send</button>
+        <div id="chatMessages"></div>
+    </div>
+</section>
+{% endblock %}
