@@ -5,3 +5,4 @@ GitPython==3.1.43
 gunicorn==22.0.0
 json5==0.9.25
 requests==2.32.3
+whitenoise==6.7.0
