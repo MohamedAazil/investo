@@ -31,6 +31,8 @@ MIDDLEWARE = [
     
 ]
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 ROOT_URLCONF = 'idea_project.urls'
