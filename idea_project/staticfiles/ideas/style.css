@@ -5,7 +5,9 @@ body {
     margin: 0;
     padding: 0;
 }
-
+h1{
+    text-align: center;
+}
 header {
     background-color: #8b4513;
     color: #fff;

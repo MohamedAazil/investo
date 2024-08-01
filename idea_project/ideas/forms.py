@@ -1,10 +1,5 @@
 from django import forms
-from .models import Idea, SignupDetail,Message,InvestorProfile
-
-class IdeaForm(forms.ModelForm):
-    class Meta:
-        model = Idea
-        fields = ['title', 'description', 'tag']
+from .models import Idea, InvestorProfile, SignupDetail, Message
 
 TAG_CHOICES = [
     ('Technology', 'Technology'),
@@ -32,14 +27,28 @@ TAG_CHOICES = [
     ('Telecommunications', 'Telecommunications'),
 ]
 
+
+class IdeaForm(forms.ModelForm):
+    entrepreneur = forms.ModelChoiceField(
+        queryset=SignupDetail.objects.all(),
+        to_field_name='email',  # Use 'email' to filter
+        empty_label="Select Entrepreneur by Email"
+    )
+
+    class Meta:
+        model = Idea
+        fields = ['title', 'description', 'tag', 'entrepreneur']
+
+
+
 class InvestorProfileForm(forms.ModelForm):
     class Meta:
         model = InvestorProfile
-        fields = ['name', 'email', 'tags']
+        fields = ['name', 'email', 'tag']
     
-    tags = forms.ChoiceField(
-        choices=TAG_CHOICES,
-        widget=forms.SelectMultiple(attrs={'class': 'form-control'}),
+    tag = forms.ChoiceField(
+        choices=InvestorProfile.TAG_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control'}),
         required=True,
     )
 
@@ -52,7 +61,6 @@ class SignupForm(forms.ModelForm):
         model = SignupDetail
         fields = ['name', 'email', 'password', 'category']
 
-
 class MessageForm(forms.ModelForm):
     class Meta:
         model = Message
@@ -60,4 +68,3 @@ class MessageForm(forms.ModelForm):
         widgets = {
             'content': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Type your message...'}),
         }
-

@@ -1,7 +1,25 @@
-
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password 
+
+class SignupDetail(models.Model):
+    CATEGORY_CHOICES = [
+        ('entrepreneur', 'Entrepreneur'),
+        ('investor', 'Investor'),
+    ]
+    
+    name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    password = models.CharField(max_length=128)  # Store hashed passwords
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
+
+    def save(self, *args, **kwargs):
+        if not self.pk:  # Only hash the password when creating a new object
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.email
 
 class Idea(models.Model):
     TAG_CHOICES = [
@@ -33,10 +51,10 @@ class Idea(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
     tag = models.CharField(max_length=50, choices=TAG_CHOICES)
+    entrepreneur = models.ForeignKey(SignupDetail, on_delete=models.CASCADE, related_name='ideas',default="")
 
     def __str__(self):
         return self.title
-
 
 
 class VideoResource(models.Model):
@@ -44,7 +62,7 @@ class VideoResource(models.Model):
     video_file = models.FileField(upload_to='videos/', blank=True, null=True)
     video_url = models.URLField(blank=True, null=True)
 
-    def __str__(self):
+    def _str_(self):
         return self.title
 
     @property
@@ -81,35 +99,15 @@ class InvestorProfile(models.Model):
         ('Food & Beverage', 'Food & Beverage'),
         ('Telecommunications', 'Telecommunications'),
     ]
-    tag = models.CharField(max_length=50, choices=TAG_CHOICES)
-
-
+    tag = models.CharField(max_length=50, choices=TAG_CHOICES,default='')
+    def __str__(self):
+        return self.name
 
 class Tag(models.Model):
     name = models.CharField(max_length=100)
 
-    def __str__(self):
+    def _str_(self):
         return self.name
-
-class SignupDetail(models.Model):
-    CATEGORY_CHOICES = [
-        ('entrepreneur', 'Entrepreneur'),
-        ('investor', 'Investor'),
-    ]
-    
-    name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
-    password = models.CharField(max_length=128)  # Store hashed passwords
-    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
-
-    def save(self, *args, **kwargs):
-        if not self.pk:  # Only hash the password when creating a new object
-            self.password = make_password(self.password)
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return self.email
-
 
 class Message(models.Model):
     sender = models.ForeignKey(SignupDetail, on_delete=models.CASCADE, related_name='sent_messages')
@@ -117,5 +115,5 @@ class Message(models.Model):
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
+    def _str_(self):
         return f"{self.sender.name} -> {self.receiver.name}: {self.content[:20]}"

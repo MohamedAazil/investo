@@ -7,6 +7,12 @@ admin.site.register(Idea)
 admin.site.register(VideoResource)
 admin.site.register(InvestorProfile)
 
+class InvestorProfileAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'tag')
+    search_fields = ('name', 'email')
+    list_filter = ('tag',)
+
+
 class SignupDetailAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'category')
     list_filter = ('category',)

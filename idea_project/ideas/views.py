@@ -1,13 +1,14 @@
 
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import IdeaForm, InvestorProfileForm,LoginForm
-from .models import VideoResource,SignupDetail,Message
+from .models import VideoResource,SignupDetail,Message,InvestorProfile
 from .forms import SignupForm, MessageForm
 from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required
-from django.utils import timezone
+from django.conf import settings
+import requests
 
 def login(request):
     if request.method == 'POST':
@@ -61,21 +62,29 @@ def signup(request):
     return render(request, 'signup.html', {'form': form})
 
 
+def success(request):
+    return render(request, 'success.html') 
+
 def home(request):
     return render(request, 'index.html')
-def investor(request):
-    return render(request,'investor.html')
+
 def message(request):
     return render(request,'message.html')
+
 def register_idea(request):
     if request.method == 'POST':
         form = IdeaForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('success')  # Ensure 'success' is a valid URL name in your urls.py
+            idea = form.save(commit=False)
+            idea.entrepreneur_email = request.session.get('user_data', {}).get('email')
+            idea.save()
+            return redirect('success')
+        else:
+            print(form.errors)  # Print errors to console for debugging
     else:
         form = IdeaForm()
     return render(request, 'register.html', {'form': form})
+
 
 def chatbot(request):
     return render(request, 'chatbot.html')
@@ -110,16 +119,27 @@ def investor_messages(request):
     return render(request, 'investor_messages.html')
 
 def edit_investor_profile(request):
+    user_data = request.session.get('user_data')
+    
+    if not user_data:
+        return redirect('login')  # Redirect to login if user data is not found in the session
+    
+    user_email = user_data.get('email')
+    profile, created = InvestorProfile.objects.get_or_create(email=user_email)
+    
     if request.method == 'POST':
-        form = InvestorProfileForm(request.POST, instance=request.user.investorprofile)
+        form = InvestorProfileForm(request.POST, instance=profile)
         if form.is_valid():
-            profile = form.save(commit=False)
-            profile.save()
-            form.save_m2m()  # Save the many-to-many data for the form.
-            return redirect('investor_dashboard')  # Ensure 'investor_dashboard' is a valid URL name in your urls.py
+            form.save()
+            return redirect('investor_dashboard')  # Redirect to dashboard after saving
+        else:
+            print(form.errors)  # Print errors to console for debugging
     else:
-        form = InvestorProfileForm(instance=request.user.investorprofile)
-    return render(request, 'investor_profile.html')
+        form = InvestorProfileForm(instance=profile)
+    
+    return render(request, 'investor_profile.html', {'form': form})
+
+
 
 def get_signup_detail_for_user(user):
     # Ensure user is an instance of Django's User model
@@ -128,34 +148,36 @@ def get_signup_detail_for_user(user):
     # Fetch SignupDetail related to the authenticated user
     return get_object_or_404(SignupDetail, email=user.email)
 
-
-@login_required
-def chat_view(request, email):
-    recipient = get_object_or_404(SignupDetail, email=email)
-    sender_email = request.session.get('user_data', {}).get('email')
-    sender = get_object_or_404(SignupDetail, email=sender_email)
+def investor(request):
+    if request.method == 'POST':
+        form = InvestorProfileForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('investor')
+    else:
+        form = InvestorProfileForm()
     
-    messages = Message.objects.filter(
-        (Q(sender=sender) & Q(receiver=recipient)) |
-        (Q(sender=recipient) & Q(receiver=sender))
-    ).order_by('timestamp')
+    tag_filter = request.session.get('tag', None)
+    if tag_filter:
+        investor_profiles = InvestorProfile.objects.filter(tag=tag_filter)
+    else:
+        investor_profiles = InvestorProfile.objects.all()
 
+    return render(request, 'investor.html', {'investor_profiles': investor_profiles, 'form': form})
+
+def chat_view(request, email):
+    user = SignupDetail.objects.get(email=email)
+    messages = Message.objects.filter(receiver=user).order_by('-timestamp')
+    form = MessageForm()
+    
     if request.method == 'POST':
         form = MessageForm(request.POST)
         if form.is_valid():
-            message = form.save(commit=False)
-            message.sender = sender
-            message.receiver = recipient
-            message.save()
-            return redirect('chat', email=email)
-    else:
-        form = MessageForm()
-
-    context = {
-        'sender': sender,
-        'recipient': recipient,
-        'messages': messages,
-        'form': form,
-    }
+            Message.objects.create(
+                sender=request.user,
+                receiver=user,
+                content=form.cleaned_data['content']
+            )
+            return redirect('chat_view', email=email)
     
-    return render(request, 'chat.html', context)
+    return render(request, 'chat.html', {'messages': messages, 'form': form, 'user': user})

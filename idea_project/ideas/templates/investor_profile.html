@@ -1,18 +1,24 @@
-<!-- investor_profile.html -->
-
 {% extends 'base2.html' %}
 
-{% block title %}Create Investor Profile{% endblock %}
+{% block title %}Edit Investor Profile{% endblock %}
 
 {% block content %}
-<body>
-    <section>
-        <h2>Create Investor Profile</h2>
-        <form method="POST" action="{% url 'save_profile' %}">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Save Profile</button>
-        </form>
-    </section>
-</body>
+<h2>Edit Your Profile</h2>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save Changes</button>
+</form>
+{% if form.errors %}
+    <div class="errors">
+        {% for field in form %}
+            {% for error in field.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <p>{{ error }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
 {% endblock %}
