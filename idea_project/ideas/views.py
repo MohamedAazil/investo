@@ -152,7 +152,7 @@ def get_signup_detail_for_user(user):
     # Fetch SignupDetail related to the authenticated user
     return get_object_or_404(SignupDetail, email=user.email)
 
-@login_required
+
 def investor(request):
     email = request.session.get('entrepreneur_email')
     if email:
@@ -167,7 +167,7 @@ def investor(request):
 
     return render(request, 'investor.html', {'investors': matching_investors})
 
-@login_required
+
 def investor_matches(request):
     email = request.session.get('investor_email')
     matching_entrepreneurs = []
@@ -184,7 +184,7 @@ def investor_matches(request):
 
     return render(request, 'investor_matches.html', {'entrepreneurs': matching_entrepreneurs})
 
-@login_required
+
 def chat_view(request, email):
     try:
         recipient = SignupDetail.objects.get(email=email)
