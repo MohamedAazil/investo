@@ -90,12 +90,12 @@ nav a:hover {
     overflow-y: scroll;
 }
 
-#mentorList, #investorCards {
+#mentorList, #investorCards, #entrepreneurCards {
     display: flex;
     flex-wrap: wrap;
 }
 
-#investorCards > div {
+#investorCards, #entrepreneurCards > div {
     background-color: #fff;
     border: 1px solid #8b4513;
     margin: 0.5rem;

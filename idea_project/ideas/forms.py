@@ -29,16 +29,15 @@ TAG_CHOICES = [
 
 
 class IdeaForm(forms.ModelForm):
-    entrepreneur = forms.ModelChoiceField(
+    email = forms.ModelChoiceField(
         queryset=SignupDetail.objects.all(),
         to_field_name='email',  # Use 'email' to filter
-        empty_label="Select Entrepreneur by Email"
+        empty_label="Email"
     )
 
     class Meta:
         model = Idea
-        fields = ['title', 'description', 'tag', 'entrepreneur']
-
+        fields = ['name', 'title', 'description', 'tag', 'email']
 
 
 class InvestorProfileForm(forms.ModelForm):

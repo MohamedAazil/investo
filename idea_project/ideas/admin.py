@@ -1,12 +1,15 @@
-# ideas/admin.py
-
 from django.contrib import admin
 from .models import SignupDetail, Idea, InvestorProfile, VideoResource,Message
 
-admin.site.register(Idea)
 admin.site.register(VideoResource)
 admin.site.register(InvestorProfile)
 
+class IdeaAdmin(admin.ModelAdmin):
+    list_display = ('name', 'title', 'description', 'tag', 'email')
+    search_fields = ('name', 'title', 'description', 'tag')
+    list_filter = ('tag',)
+
+admin.site.register(Idea, IdeaAdmin)
 class InvestorProfileAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'tag')
     search_fields = ('name', 'email')

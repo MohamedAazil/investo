@@ -47,11 +47,12 @@ class Idea(models.Model):
         ('Food & Beverage', 'Food & Beverage'),
         ('Telecommunications', 'Telecommunications'),
     ]
-    
+
+    name = models.CharField(max_length=200)
     title = models.CharField(max_length=200)
     description = models.TextField()
     tag = models.CharField(max_length=50, choices=TAG_CHOICES)
-    entrepreneur = models.ForeignKey(SignupDetail, on_delete=models.CASCADE, related_name='ideas',default="")
+    email = models.ForeignKey(SignupDetail, on_delete=models.CASCADE, related_name='ideas',default="")
 
     def __str__(self):
         return self.title
@@ -115,5 +116,6 @@ class Message(models.Model):
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
-    def _str_(self):
+    def __str__(self):
         return f"{self.sender.name} -> {self.receiver.name}: {self.content[:20]}"
+

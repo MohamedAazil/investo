@@ -1,14 +1,17 @@
 
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import IdeaForm, InvestorProfileForm,LoginForm
-from .models import VideoResource,SignupDetail,Message,InvestorProfile
+from .models import VideoResource,SignupDetail,Message,InvestorProfile,Idea
 from .forms import SignupForm, MessageForm
 from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-import requests
+from django.http import HttpResponseNotFound
+from django.core.serializers.json import DjangoJSONEncoder
+import json
+
 
 def login(request):
     if request.method == 'POST':
@@ -33,8 +36,10 @@ def login(request):
                     
                     # Redirect based on the category
                     if user.category == 'entrepreneur':
+                        request.session['entrepreneur_email'] = email
                         return redirect('home')
                     elif user.category == 'investor':
+                        request.session['investor_email'] = email
                         return redirect('investor_dashboard')
                 else:
                     messages.error(request, 'Invalid password')
@@ -42,7 +47,7 @@ def login(request):
                 messages.error(request, 'User with this email does not exist')
     else:
         form = LoginForm()
-
+    
     return render(request, 'login.html', {'form': form})
 
 
@@ -54,8 +59,10 @@ def signup(request):
             # Redirect to the appropriate dashboard based on the category
             category = form.cleaned_data['category']
             if category == 'entrepreneur':
+                request.session['entrepreneur_email'] = form.cleaned_data['email']
                 return redirect('home')
             elif category == 'investor':
+                request.session['investor_email'] = form.cleaned_data['email']
                 return redirect('investor_dashboard')
     else:
         form = SignupForm()
@@ -112,9 +119,6 @@ def profile_success(request):
 def investor_dashboard(request):
     return render(request, 'investor_dashboard.html')
 
-def investor_matches(request):
-    return render(request, 'investor_matches.html')
-
 def investor_messages(request):
     return render(request, 'investor_messages.html')
 
@@ -148,36 +152,70 @@ def get_signup_detail_for_user(user):
     # Fetch SignupDetail related to the authenticated user
     return get_object_or_404(SignupDetail, email=user.email)
 
+@login_required
 def investor(request):
-    if request.method == 'POST':
-        form = InvestorProfileForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('investor')
+    email = request.session.get('entrepreneur_email')
+    if email:
+        try:
+            idea = Idea.objects.get(email__email=email)
+            entrepreneur_tag = idea.tag
+            matching_investors = InvestorProfile.objects.filter(tag=entrepreneur_tag)
+        except Idea.DoesNotExist:
+            matching_investors = []
     else:
-        form = InvestorProfileForm()
-    
-    tag_filter = request.session.get('tag', None)
-    if tag_filter:
-        investor_profiles = InvestorProfile.objects.filter(tag=tag_filter)
-    else:
-        investor_profiles = InvestorProfile.objects.all()
+        matching_investors = []
 
-    return render(request, 'investor.html', {'investor_profiles': investor_profiles, 'form': form})
+    return render(request, 'investor.html', {'investors': matching_investors})
 
+@login_required
+def investor_matches(request):
+    email = request.session.get('investor_email')
+    matching_entrepreneurs = []
+
+    if email:
+        try:
+            investor = get_object_or_404(InvestorProfile, email=email)
+            investor_tag = investor.tag
+            matching_entrepreneurs = Idea.objects.filter(tag=investor_tag)
+        except InvestorProfile.DoesNotExist:
+            matching_entrepreneurs = []
+        except Idea.DoesNotExist:
+            matching_entrepreneurs = []
+
+    return render(request, 'investor_matches.html', {'entrepreneurs': matching_entrepreneurs})
+
+@login_required
 def chat_view(request, email):
-    user = SignupDetail.objects.get(email=email)
-    messages = Message.objects.filter(receiver=user).order_by('-timestamp')
+    try:
+        recipient = SignupDetail.objects.get(email=email)
+    except SignupDetail.DoesNotExist:
+        return HttpResponseNotFound("User not found")
+
+    # Use the email stored in the session to get the sender's details
+    sender_email = request.session.get('entrepreneur_email')
+    if not sender_email:
+        return HttpResponseNotFound("Sender not found")
+
+    try:
+        sender = SignupDetail.objects.get(email=sender_email)
+    except SignupDetail.DoesNotExist:
+        return HttpResponseNotFound("Sender not found")
+
+    messages = Message.objects.filter(
+        Q(sender=sender, receiver=recipient) |
+        Q(sender=recipient, receiver=sender)
+    ).order_by('timestamp')
+
     form = MessageForm()
-    
+
     if request.method == 'POST':
         form = MessageForm(request.POST)
         if form.is_valid():
             Message.objects.create(
-                sender=request.user,
-                receiver=user,
+                sender=sender,
+                receiver=recipient,
                 content=form.cleaned_data['content']
             )
             return redirect('chat_view', email=email)
-    
-    return render(request, 'chat.html', {'messages': messages, 'form': form, 'user': user})
+
+    return render(request, 'chat.html', {'messages': messages, 'form': form, 'recipient': recipient})
