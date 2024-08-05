@@ -167,7 +167,6 @@ def investor(request):
 
     return render(request, 'investor.html', {'investors': matching_investors})
 
-
 def investor_matches(request):
     email = request.session.get('investor_email')
     matching_entrepreneurs = []
@@ -183,6 +182,7 @@ def investor_matches(request):
             matching_entrepreneurs = []
 
     return render(request, 'investor_matches.html', {'entrepreneurs': matching_entrepreneurs})
+
 
 def chat_view(request, email):
     try:
