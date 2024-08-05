@@ -184,7 +184,6 @@ def investor_matches(request):
 
     return render(request, 'investor_matches.html', {'entrepreneurs': matching_entrepreneurs})
 
-@login_required
 def chat_view(request, email):
     try:
         recipient = SignupDetail.objects.get(email=email)
