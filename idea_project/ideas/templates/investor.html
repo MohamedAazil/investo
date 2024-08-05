@@ -16,52 +16,6 @@
             {% endfor %}
         </div>
     </section>
-
-    <script>
-        const investors = [
-          
-            { name: 'Nithin', email: 'nithinkumars866@example.com', interest: ['Technology'] },
-            { name: 'Investor 3', email: 'investor3@example.com', interest: ['Healthcare'] }
-        ];
-
-        let currentInvestorIndex = 0;
-
-        function initInvestors() {
-            const investorCards = document.getElementById('investorCards');
-
-            function showInvestor() {
-                investorCards.innerHTML = '';
-                const investor = investors[currentInvestorIndex];
-                const div = document.createElement('div');
-                div.classList.add('investor-card');
-                div.innerHTML = `
-                    <h3>${investor.name}</h3>
-                    <p>${investor.interest.join(', ')}</p>
-                    <button class="messageBtn" onclick="redirectToMessage('${investor.email}')">Message</button>
-                `;
-                investorCards.appendChild(div);
-            }
-
-            showInvestor();
-
-            document.getElementById('likeBtn').addEventListener('click', () => {
-                alert('You liked ' + investors[currentInvestorIndex].name);
-                currentInvestorIndex = (currentInvestorIndex + 1) % investors.length;
-                showInvestor();
-            });
-
-            document.getElementById('dislikeBtn').addEventListener('click', () => {
-                alert('You disliked ' + investors[currentInvestorIndex].name);
-                currentInvestorIndex = (currentInvestorIndex + 1) % investors.length;
-                showInvestor();
-            });
-        }
-
-        function redirectToMessage(email) {
-            window.location.href = `/chat/${encodeURIComponent(email)}/`;
-        }
-
-        initInvestors();
-    </script>
+        
 </body>
 {% endblock %}
