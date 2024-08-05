@@ -191,7 +191,7 @@ def chat_view(request, email):
         return HttpResponseNotFound("User not found")
 
     # Use the email stored in the session to get the sender's details
-    sender_email = request.session.get('entrepreneur_email')
+    sender_email = request.session.get('user_data', {}).get('email')
     if not sender_email:
         return HttpResponseNotFound("Sender not found")
 
