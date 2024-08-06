@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (
     signup, register_idea, home, investor, chatbot, study,
     investor_dashboard, investor_matches, edit_investor_profile, 
-    chat_view, login, profile_success,success,investor_chatbot
+    chat_view, login, profile_success,success,investor_chatbot,mentors
 )
 
 urlpatterns = [
@@ -20,4 +20,5 @@ urlpatterns = [
     path('profile_success/', profile_success, name='profile_success'),
     path('success/', success, name='success'),
     path('investor_chatbot/', investor_chatbot, name='investor_chatbot'),
+    path('mentors/', mentors, name='mentors'),
 ]
