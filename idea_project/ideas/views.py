@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import IdeaForm, InvestorProfileForm,LoginForm
 from .models import VideoResource,SignupDetail,Message,InvestorProfile,Idea
@@ -8,8 +9,6 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.http import HttpResponseNotFound
-from django.core.serializers.json import DjangoJSONEncoder
-import json
 
 
 def login(request):
