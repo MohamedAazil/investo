@@ -21,4 +21,5 @@ urlpatterns = [
     path('success/', success, name='success'),
     path('investor_chatbot/', investor_chatbot, name='investor_chatbot'),
     path('mentors/', mentors, name='mentors'),
+    path('back/', back, name='back'),
 ]
