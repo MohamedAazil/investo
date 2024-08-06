@@ -4,10 +4,10 @@
 
 {% block content %}
 <body>
-    <h1>AI Integration with Gemini</h1>
+    <h1 style="text-align: center;">AI Integration with Gemini</h1>
     <form id="chatbot-form">
-        <label for="input_data">Enter Input:</label>
-        <input type="text" id="input_data" name="input_data" required>
+        <label for="input_data"><strong>Investo Bot</strong></label>
+        <input type="text" id="input_data" name="input_data" required placeholder="Ask me anything">
         <button type="submit">Submit</button>
     </form>
     <div id="response-section" style="display: none;">
@@ -46,6 +46,7 @@
                 Entrepreneurs with similar tags to those selected by investors will be displayed in the message section, allowing investors to message the entrepreneurs. 
                 This facilitates connections between entrepreneurs and investors. If you don't know the answer to a question, you can state any answer of your choice using your intelligence.
                 Here is a question for you:
+
         `;
 
             // Append user input to the large paragraph
