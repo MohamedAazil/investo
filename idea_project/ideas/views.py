@@ -1,4 +1,3 @@
-
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import IdeaForm, InvestorProfileForm,LoginForm
 from .models import VideoResource,SignupDetail,Message,InvestorProfile,Idea
@@ -90,9 +89,14 @@ def register_idea(request):
         form = IdeaForm()
     return render(request, 'register.html', {'form': form})
 
+def mentors(request):
+    return render(request,'mentors.html')
 
 def chatbot(request):
     return render(request, 'chatbot.html')
+
+def investor_chatbot(request):
+    return render(request, 'investor_chatbot.html')
 
 def study(request):
     videos = VideoResource.objects.all()
