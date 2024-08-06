@@ -13,6 +13,7 @@ header {
     color: #fff;
     padding: 1rem;
     text-align: center;
+    position: relative;
 }
 
 header nav a {
@@ -52,13 +53,13 @@ select {
     width: 100%;
     max-width: 400px;
     margin-bottom: 1rem;
+    
 }
 
 select option {
     padding: 0.5rem;
 }
 
-/* Add styles for navigation menu */
 nav {
     background-color: #8b4513;
     padding: 1rem;
@@ -130,4 +131,39 @@ nav a:hover {
     padding: 1rem;
     width: calc(33% - 1rem);
     box-sizing: border-box;
+}
+
+.container {
+    text-align: center;
+    width: 80%;
+    max-width: 600px;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+header .back-arrow {
+    position: absolute; /* Change from fixed to absolute */
+    top: 20px;
+    left: 20px;
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    line-height: 60px; /* Adjust line-height for better alignment */
+    text-align: center; /* Center the arrow symbol */
+    text-decoration: none;
+    color: brown;
+    background-color: white;
+    border: 2px solid brown;
+    border-radius: 50%;
+    font-size: 36px;
+    border-radius: 8px; 
+    font-weight: bold;
+}
+
+header .back-arrow:hover {
+    background-color: brown;
+    color: white;
 }
