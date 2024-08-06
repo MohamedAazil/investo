@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (
     signup, register_idea, home, investor, chatbot, study,
     investor_dashboard, investor_matches, edit_investor_profile, 
-    chat_view, login, profile_success,success,investor_chatbot,mentors
+    chat_view, login, profile_success,success,investor_chatbot,mentors,back
 )
 
 urlpatterns = [
