@@ -185,7 +185,6 @@ def investor_matches(request):
 
     return render(request, 'investor_matches.html', {'entrepreneurs': matching_entrepreneurs})
 
-
 def chat_view(request, email):
     try:
         recipient = SignupDetail.objects.get(email=email)
@@ -195,7 +194,7 @@ def chat_view(request, email):
     # Use the email stored in the session to get the sender's details
     sender_email = request.session.get('user_data', {}).get('email')
     if not sender_email:
-        return HttpResponseNotFound("Sender not found")
+        return HttpResponseNotFound("Sender wakkkanot found")
 
     try:
         sender = SignupDetail.objects.get(email=sender_email)
