@@ -33,9 +33,11 @@ def login(request):
                     
                     # Redirect based on the category
                     if user.category == 'entrepreneur':
+                        request.session['user_email'] = email
                         request.session['entrepreneur_email'] = email
                         return redirect('home')
                     elif user.category == 'investor':
+                        request.session['user_email'] = email
                         request.session['investor_email'] = email
                         return redirect('investor_dashboard')
                 else:
@@ -56,9 +58,11 @@ def signup(request):
             # Redirect to the appropriate dashboard based on the category
             category = form.cleaned_data['category']
             if category == 'entrepreneur':
+                request.session['user_email'] = form.cleaned_data['email']
                 request.session['entrepreneur_email'] = form.cleaned_data['email']
                 return redirect('home')
             elif category == 'investor':
+                request.session['user_email'] = form.cleaned_data['email']
                 request.session['investor_email'] = form.cleaned_data['email']
                 return redirect('investor_dashboard')
     else:
@@ -192,7 +196,7 @@ def chat_view(request, email):
         return HttpResponseNotFound("User not found")
 
     # Use the email stored in the session to get the sender's details
-    sender_email = request.session.get('user_data', {}).get('email')
+    sender_email = request.session.get('investor_email')
     if not sender_email:
         return HttpResponseNotFound("Sender wakkkanot found")
 
