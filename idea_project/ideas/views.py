@@ -223,3 +223,12 @@ def chat_view(request, email):
             return redirect('chat_view', email=email)
 
     return render(request, 'chat.html', {'messages': messages, 'form': form, 'recipient': recipient})
+    
+def back(request):
+    category = request.session.get('user_data',{}).get('category')
+    if category == 'investor':
+        return render(request,'investor_dashboard.html')
+    elif category =='entrepreneur':
+        return render(request, 'base.html')
+    else:
+        return HttpResponseNotFound(request.session.get('user_data',{}).get('category'))
