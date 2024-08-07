@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import IdeaForm, InvestorProfileForm,LoginForm
 from .models import VideoResource,SignupDetail,Message,InvestorProfile,Idea
@@ -33,11 +34,9 @@ def login(request):
                     
                     # Redirect based on the category
                     if user.category == 'entrepreneur':
-                        request.session['user_email'] = email
                         request.session['entrepreneur_email'] = email
                         return redirect('home')
                     elif user.category == 'investor':
-                        request.session['user_email'] = email
                         request.session['investor_email'] = email
                         return redirect('investor_dashboard')
                 else:
@@ -58,11 +57,9 @@ def signup(request):
             # Redirect to the appropriate dashboard based on the category
             category = form.cleaned_data['category']
             if category == 'entrepreneur':
-                request.session['user_email'] = form.cleaned_data['email']
                 request.session['entrepreneur_email'] = form.cleaned_data['email']
                 return redirect('home')
             elif category == 'investor':
-                request.session['user_email'] = form.cleaned_data['email']
                 request.session['investor_email'] = form.cleaned_data['email']
                 return redirect('investor_dashboard')
     else:
@@ -149,6 +146,15 @@ def edit_investor_profile(request):
     
     return render(request, 'investor_profile.html', {'form': form})
 
+def back(request):
+    category = request.session.get('user_data',{}).get('category')
+    if category == 'investor':
+        return render(request,'investor_dashboard.html')
+    elif category =='entrepreneur':
+        return render(request, 'base.html')
+    else:
+        return HttpResponseNotFound(request.session.get('user_data',{}).get('category'))
+        
 
 
 def get_signup_detail_for_user(user):
@@ -163,7 +169,7 @@ def investor(request):
     email = request.session.get('entrepreneur_email')
     if email:
         try:
-            idea = Idea.objects.get(email__email=email)
+            idea = get_object_or_404(Idea,email__email=email)
             entrepreneur_tag = idea.tag
             matching_investors = InvestorProfile.objects.filter(tag=entrepreneur_tag)
         except Idea.DoesNotExist:
@@ -175,7 +181,6 @@ def investor(request):
 
 def investor_matches(request):
     email = request.session.get('investor_email')
-    matching_entrepreneurs = []
 
     if email:
         try:
@@ -189,6 +194,7 @@ def investor_matches(request):
 
     return render(request, 'investor_matches.html', {'entrepreneurs': matching_entrepreneurs})
 
+
 def chat_view(request, email):
     try:
         recipient = SignupDetail.objects.get(email=email)
@@ -196,7 +202,7 @@ def chat_view(request, email):
         return HttpResponseNotFound("User not found")
 
     # Use the email stored in the session to get the sender's details
-    sender_email = request.session.get('investor_email')
+    sender_email = request.session.get('user_data', {}).get('email')
     if not sender_email:
         return HttpResponseNotFound("Sender wakkkanot found")
 
@@ -223,12 +229,3 @@ def chat_view(request, email):
             return redirect('chat_view', email=email)
 
     return render(request, 'chat.html', {'messages': messages, 'form': form, 'recipient': recipient})
-    
-def back(request):
-    category = request.session.get('user_data',{}).get('category')
-    if category == 'investor':
-        return render(request,'investor_dashboard.html')
-    elif category =='entrepreneur':
-        return render(request, 'base.html')
-    else:
-        return HttpResponseNotFound(request.session.get('user_data',{}).get('category'))
