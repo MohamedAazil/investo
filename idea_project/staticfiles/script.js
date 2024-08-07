@@ -33,5 +33,26 @@ function saveProfile(event) {
     console.log("Email:", email);
     console.log("Bio:", bio);
 
-    // Your code to handle form submission, e.g., sending data to a server
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    const dropdowns = document.querySelectorAll('.dropdown');
+
+    dropdowns.forEach(dropdown => {
+        dropdown.addEventListener('click', function() {
+            const content = this.nextElementSibling;
+            const arrow = this.querySelector('.arrow');
+
+            if (content.style.display === "none" || content.style.display === "") {
+                content.style.display = "block";
+                arrow.classList.remove('fa-chevron-down');
+                arrow.classList.add('fa-chevron-up');
+            } else {
+                content.style.display = "none";
+                arrow.classList.remove('fa-chevron-up');
+                arrow.classList.add('fa-chevron-down');
+            }
+        });
+    });
+});
+
